@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import mysql.connector
 import random
+import json
 import os
 
 app = Flask(__name__)
@@ -50,6 +51,17 @@ def init_db():
             completed_at TIMESTAMP    NULL
         )
     ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS sessions (
+            id           INT          AUTO_INCREMENT PRIMARY KEY,
+            ip_address   VARCHAR(100) NOT NULL UNIQUE,
+            opens        INT          NOT NULL DEFAULT 0,
+            opened_boxes TEXT         NOT NULL DEFAULT '[]',
+            final_gift   INT          NULL,
+            claimed      TINYINT      NOT NULL DEFAULT 0,
+            created_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
     conn.commit()
     cur.close()
     conn.close()
@@ -61,40 +73,37 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/open-box', methods=['POST'])
-def open_box():
-    data = request.get_json(force=True)
-    try:
-        box_id = int(data.get('box_id', 0))
-    except (ValueError, TypeError):
-        return jsonify({'error': 'Invalid box id'}), 400
-    if box_id < 1 or box_id > 26:
-        return jsonify({'error': 'Box not found'}), 404
-    return jsonify({'gift': BOX_GIFTS[box_id]})
-
-
-@app.route('/claim', methods=['POST',"GET"])
+@app.route('/claim', methods=['POST'])
 def claim():
     data   = request.get_json(force=True)
     name   = str(data.get('name', '')).strip()
     bkash  = str(data.get('bkash', '')).strip()
-    amount = data.get('amount')
 
     if not name:
         return jsonify({'error': 'নাম লিখুন'}), 400
     if not bkash or len(bkash) < 11:
         return jsonify({'error': 'সঠিক bKash নম্বর দিন'}), 400
-    if not amount:
-        return jsonify({'error': 'পরিমাণ নেই'}), 400
-    try:
-        amount = int(amount)
-    except (ValueError, TypeError):
-        return jsonify({'error': 'Invalid amount'}), 400
 
+    ip   = get_ip()
     conn = get_db()
-    cur  = conn.cursor()
+    cur  = conn.cursor(dictionary=True)
 
-    # ── Duplicate bKash check (also enforced by UNIQUE in DB) ──
+    sess = get_session(cur, ip)
+
+    if sess['opens'] < 3:
+        cur.close(); conn.close()
+        return jsonify({'error': 'আগে ৩টি বাক্স খুলুন!'}), 400
+
+    if sess['claimed']:
+        cur.close(); conn.close()
+        return jsonify({'error': 'আপনি ইতিমধ্যে সালামি নিয়েছেন! 🚫'}), 400
+
+    amount = sess['final_gift']
+    if not amount:
+        cur.close(); conn.close()
+        return jsonify({'error': 'পরিমাণ পাওয়া যায়নি!'}), 400
+
+    # Duplicate bKash check
     cur.execute("SELECT id FROM claims WHERE bkash_number = %s", (bkash,))
     if cur.fetchone():
         cur.close(); conn.close()
@@ -104,6 +113,7 @@ def claim():
         "INSERT INTO claims (name, bkash_number, gift_amount, status) VALUES (%s, %s, %s, 'pending')",
         (name, bkash, amount)
     )
+    cur.execute("UPDATE sessions SET claimed=1 WHERE ip_address=%s", (ip,))
     conn.commit()
     cur.close()
     conn.close()
@@ -113,6 +123,21 @@ def claim():
         'message': f'ঈদ মোবারক {name}! আপনার ৳{amount:,} সালামি শীঘ্রই পাঠানো হবে! 🌙✨'
     })
 
+@app.route('/my-state')
+def my_state():
+    ip   = get_ip()
+    conn = get_db()
+    cur  = conn.cursor(dictionary=True)
+    sess = get_session(cur, ip)
+    conn.commit()  # save if new session was created
+    cur.close()
+    conn.close()
+    return jsonify({
+        'opens':        sess['opens'],
+        'opened_boxes': json.loads(sess['opened_boxes']),
+        'final_gift':   sess['final_gift'],
+        'claimed':      bool(sess['claimed'])
+    })
 
 @app.route('/history', methods=['GET'])
 def history():
@@ -189,7 +214,64 @@ def admin_delete():
     conn.close()
     return jsonify({'success': True})
 
+@app.route('/open-box', methods=['POST'])
+def open_box():
+    data = request.get_json(force=True)
+    try:
+        box_id = int(data.get('box_id', 0))
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Invalid box id'}), 400
+    if box_id < 1 or box_id > 26:
+        return jsonify({'error': 'Box not found'}), 404
 
+    ip   = get_ip()
+    conn = get_db()
+    cur  = conn.cursor(dictionary=True)
+
+    sess        = get_session(cur, ip)
+    opens       = sess['opens']
+    opened_boxes = json.loads(sess['opened_boxes'])
+
+    if opens >= 3:
+        cur.close(); conn.close()
+        return jsonify({'error': 'আপনার ৩টি সুযোগ শেষ!', 'blocked': True}), 403
+
+    if box_id in opened_boxes:
+        cur.close(); conn.close()
+        return jsonify({'error': 'এই বাক্স আগেই খোলা হয়েছে!'}), 400
+
+    opened_boxes.append(box_id)
+    opens += 1
+    gift  = BOX_GIFTS[box_id]
+    final = gift if opens == 3 else None
+
+    cur.execute("""
+        UPDATE sessions
+        SET opens=%s, opened_boxes=%s, final_gift=COALESCE(%s, final_gift)
+        WHERE ip_address=%s
+    """, (opens, json.dumps(opened_boxes), final, ip))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        'gift':        gift,
+        'opens':       opens,
+        'final_gift':  gift if opens == 3 else None,
+        'done':        opens >= 3
+    })
+
+def get_ip():
+    # Works behind Render's proxy too
+    return request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
+
+def get_session(cur, ip):
+    cur.execute("SELECT * FROM sessions WHERE ip_address = %s", (ip,))
+    row = cur.fetchone()
+    if not row:
+        cur.execute("INSERT INTO sessions (ip_address) VALUES (%s)", (ip,))
+        return {'ip_address': ip, 'opens': 0, 'opened_boxes': '[]', 'final_gift': None, 'claimed': 0}
+    return row
 
 init_db()
 

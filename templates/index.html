@@ -1353,52 +1353,31 @@
     // ── State Management ──────────────────────────
     const LS_KEY = 'mystery_salami_v1';
 
-    function loadState() {
+    // ── Server-side state (no localStorage) ──────
+    let state = { opens: 0, openedBoxes: [], gifts: [], finalGift: null, claimed: false };
+
+    function saveState(s) { } // empty — server tracks everything now
+
+    async function restoreUI() {
       try {
-        const raw = localStorage.getItem(LS_KEY);
-        if (raw) return JSON.parse(raw);
+        const res = await fetch('/my-state');
+        const data = await res.json();
+        state.opens = data.opens;
+        state.openedBoxes = data.opened_boxes;
+        state.finalGift = data.final_gift;
+        state.claimed = data.claimed;
       } catch (e) { }
-      return { opens: 0, openedBoxes: [], gifts: [], finalGift: null, claimed: false };
-    }
 
-    function saveState(s) {
-      localStorage.setItem(LS_KEY, JSON.stringify(s));
-    }
-
-    let state = loadState();
-
-    // ── Floating Particles ────────────────────────
-    (function spawnParticles() {
-      const container = document.getElementById('particles');
-      for (let i = 0; i < 28; i++) {
-        const p = document.createElement('div');
-        p.className = 'star-particle';
-        p.style.cssText = `
-          left: ${Math.random() * 100}%;
-          --dur: ${5 + Math.random() * 10}s;
-          --delay: ${-Math.random() * 15}s;
-          width: ${2 + Math.random() * 4}px;
-          height: ${2 + Math.random() * 4}px;
-          opacity: 0;
-        `;
-        container.appendChild(p);
-      }
-    })();
-
-    // ── Restore UI from localStorage ─────────────
-    function restoreUI() {
-      // Restore opened boxes
-      state.openedBoxes.forEach((id, idx) => {
+      // Restore opened boxes visually
+      state.openedBoxes.forEach(id => {
         const box = document.getElementById('box-' + id);
         if (!box) return;
-        document.getElementById('back-' + id).textContent = '৳' + state.gifts[idx].toLocaleString();
+        document.getElementById('back-' + id).textContent = '✓';
         box.classList.add('opened');
       });
 
-      // Update attempt dots
       updateDots();
 
-      // If 3 opens done
       if (state.opens >= 3) {
         disableAllBoxes();
         showResult();
