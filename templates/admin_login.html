@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin Login – Mystery Salami</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #030d07; --gold: #d4a843; --gold-lite: #f0c866;
+      --green: #0b2515; --green-mid: #0f3a1c; --cream: #fef6e4; --cream-dim: #c9b98a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Bengali', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpolygon points='40,5 47,27 70,27 52,42 59,64 40,50 21,64 28,42 10,27 33,27' fill='none' stroke='%23d4a843' stroke-width='0.3' opacity='0.15'/%3E%3C/svg%3E");
+    }
+    .card {
+      background: linear-gradient(145deg, #0b2515, #071a0e);
+      border: 1.5px solid var(--gold);
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 100%; max-width: 380px;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(212,168,67,0.3);
+    }
+    .icon { font-size: 3rem; margin-bottom: 12px; }
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.2rem; color: var(--gold-lite);
+      margin-bottom: 6px;
+    }
+    p { font-size: 0.85rem; color: var(--cream-dim); margin-bottom: 28px; }
+    input {
+      width: 100%; background: rgba(15,58,28,0.5);
+      border: 1.5px solid rgba(212,168,67,0.3);
+      border-radius: 12px; padding: 13px 16px;
+      color: var(--cream); font-family: inherit; font-size: 1rem;
+      outline: none; text-align: center; letter-spacing: 4px;
+      margin-bottom: 16px;
+    }
+    input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,168,67,0.15); }
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold-lite), var(--gold));
+      border: none; border-radius: 12px; padding: 14px;
+      color: #030d07; font-family: inherit; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    .err { color: #f08080; font-size: 0.82rem; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🔐</div>
+    <h1>Admin Panel</h1>
+    <p>Mystery Salami · রহস্যময় সালামি</p>
+    <input type="password" id="pwd" placeholder="Password" onkeydown="if(event.key==='Enter')login()"/>
+    <button onclick="login()">লগইন করুন →</button>
+    <div class="err" id="err">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
+  </div>
+  <script>
+    function login() {
+      const pwd = document.getElementById('pwd').value.trim();
+      if (!pwd) return;
+      window.location.href = '/admin?pwd=' + encodeURIComponent(pwd);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mystery Salami – রহস্যময় সালামি</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Amiri:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ─── CSS Variables ─────────────────────────── */
+    :root {
+      --bg-deep:    #030d07;
+      --bg-dark:    #071a0e;
+      --bg-card:    #0b2515;
+      --green-mid:  #0f3a1c;
+      --green-lite: #165e2e;
+      --gold:       #d4a843;
+      --gold-lite:  #f0c866;
+      --gold-dim:   #8a6820;
+      --cream:      #fef6e4;
+      --cream-dim:  #c9b98a;
+      --red:        #b83232;
+      --red-lite:   #e04040;
+      --white:      #ffffff;
+      --shadow-gold: 0 0 20px rgba(212,168,67,0.4);
+      --shadow-gold-lg: 0 0 50px rgba(212,168,67,0.6), 0 0 100px rgba(212,168,67,0.3);
+    }
+
+    /* ─── Reset & Base ──────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans Bengali', sans-serif;
+      background: var(--bg-deep);
+      color: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ─── Animated Islamic Star BG ──────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23d4a843' stroke-width='0.3' opacity='0.18'%3E%3Cpolygon points='40,5 47,27 70,27 52,42 59,64 40,50 21,64 28,42 10,27 33,27'/%3E%3Ccircle cx='40' cy='40' r='12'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(15,58,28,0.9) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 50% 100%, rgba(11,37,21,0.95) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Floating Particles ────────────────────── */
+    #particles {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .star-particle {
+      position: absolute;
+      width: 4px; height: 4px;
+      background: var(--gold-lite);
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatUp var(--dur, 8s) var(--delay, 0s) infinite ease-in-out;
+    }
+    .star-particle::before {
+      content: '✦';
+      position: absolute;
+      font-size: 10px;
+      color: var(--gold);
+      top: -4px; left: -3px;
+    }
+
+    @keyframes floatUp {
+      0%   { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.5); }
+      10%  { opacity: 0.8; }
+      90%  { opacity: 0.4; }
+      100% { opacity: 0; transform: translateY(-10vh) rotate(360deg) scale(1.2); }
+    }
+
+    /* ─── Confetti Canvas ───────────────────────── */
+    #confetti-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ─── Main Container ────────────────────────── */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 60px;
+    }
+
+    /* ─── Header ────────────────────────────────── */
+    header {
+      text-align: center;
+      padding: 40px 20px 30px;
+      position: relative;
+    }
+
+    .header-deco {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      font-size: 2.4rem;
+      animation: swayDeco 4s ease-in-out infinite alternate;
+    }
+    @keyframes swayDeco {
+      from { transform: translateY(-3px); }
+      to   { transform: translateY(3px); }
+    }
+
+    .eid-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold), var(--gold-dim));
+      color: var(--bg-deep);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      padding: 5px 18px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-gold);
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 10px rgba(212,168,67,0.5); }
+      50%       { box-shadow: 0 0 25px rgba(212,168,67,0.9), 0 0 40px rgba(212,168,67,0.4); }
+    }
+
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(180deg, #fff8e7 0%, var(--gold-lite) 40%, var(--gold) 70%, var(--gold-dim) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 0 30px rgba(212,168,67,0.7));
+      letter-spacing: 2px;
+    }
+
+    .title-bn {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      color: var(--cream-dim);
+      margin-top: 8px;
+      letter-spacing: 3px;
+      opacity: 0.85;
+    }
+
+    .header-divider {
+      width: 220px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 18px auto;
+      position: relative;
+    }
+    .header-divider::before {
+      content: '✦';
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--gold);
+      font-size: 1rem;
+      background: var(--bg-deep);
+      padding: 0 8px;
+    }
+
+    /* ─── Instruction Banner ────────────────────── */
+    .instruction-card {
+      background: linear-gradient(135deg, rgba(11,37,21,0.9), rgba(15,58,28,0.8));
+      border: 1px solid rgba(212,168,67,0.3);
+      border-radius: 16px;
+      padding: 16px 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(212,168,67,0.15);
+    }
+
+    .instruction-card p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--cream-dim);
+    }
+    .instruction-card strong {
+      color: var(--gold-lite);
+      font-weight: 700;
+    }
+
+    /* ─── Attempts Counter ──────────────────────── */
+    .attempts-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .attempt-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: transparent;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+    .attempt-dot.used {
+      background: var(--gold);
+      box-shadow: 0 0 12px var(--gold);
+    }
+    .attempt-dot.used::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--bg-deep);
+      font-weight: 900;
+    }
+
+    .attempts-label {
+      font-size: 0.88rem;
+      color: var(--cream-dim);
+      font-weight: 600;
+    }
+
+    /* ─── Boxes Grid ────────────────────────────── */
+    .boxes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 480px) {
+      .boxes-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    }
+
+    /* ─── Individual Box ────────────────────────── */
+    .box {
+      perspective: 600px;
+      cursor: pointer;
+      aspect-ratio: 1;
+    }
+    .box.disabled { cursor: not-allowed; pointer-events: none; }
+    .box.opened   { cursor: default; pointer-events: none; }
+
+    .box-inner {
+      position: relative;
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+      border-radius: 14px;
+    }
+    .box.opened .box-inner { transform: rotateY(180deg); }
+
+    .box-front, .box-back {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Front face */
+    .box-front {
+      background: linear-gradient(145deg, #12391e, #0d2e17);
+      border: 1.5px solid rgba(212,168,67,0.35);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212,168,67,0.1);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .box:not(.disabled):not(.opened) .box-front:hover {
+      border-color: var(--gold);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6), var(--shadow-gold);
+      transform: translateY(-4px);
+    }
+
+    .gift-icon {
+      font-size: 2rem;
+      line-height: 1;
+      filter: drop-shadow(0 2px 6px rgba(212,168,67,0.5));
+      transition: transform 0.3s;
+    }
+    .box:not(.disabled):not(.opened) .box-front:hover .gift-icon {
+      transform: scale(1.2) rotate(-8deg);
+    }
+
+    .box-num {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--gold-dim);
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    /* Ribbon cross on front */
+    .box-front::before,
+    .box-front::after {
+      content: '';
+      position: absolute;
+      background: linear-gradient(to right, transparent 40%, rgba(212,168,67,0.2) 50%, transparent 60%);
+      pointer-events: none;
+    }
+    .box-front::before { inset: 0; width: 100%; height: 100%; }
+    .box-front::after  { inset: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, transparent 40%, rgba(212,168,67,0.2) 50%, transparent 60%);
+    }
+
+    /* Back face */
+    .box-back {
+      background: linear-gradient(145deg, #1a5c38, #0d3b22);
+      border: 1.5px solid var(--gold);
+      box-shadow: var(--shadow-gold);
+      transform: rotateY(180deg);
+      padding: 8px;
+    }
+
+    .back-amount {
+      font-family: 'Amiri', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold-lite);
+      text-shadow: 0 0 20px rgba(212,168,67,0.8);
+      line-height: 1.1;
+      text-align: center;
+    }
+    .back-taka {
+      font-size: 0.7rem;
+      color: var(--cream-dim);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+    }
+    .back-sparkle {
+      font-size: 1rem;
+      animation: spinStar 2s linear infinite;
+    }
+    @keyframes spinStar {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Disabled box */
+    .box.disabled .box-front {
+      opacity: 0.35;
+      border-color: rgba(212,168,67,0.1);
+    }
+
+    /* Shake animation on open */
+    @keyframes shakeBox {
+      0%   { transform: rotate(0deg); }
+      15%  { transform: rotate(-8deg); }
+      30%  { transform: rotate(8deg); }
+      45%  { transform: rotate(-5deg); }
+      60%  { transform: rotate(5deg); }
+      75%  { transform: rotate(-2deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .box.shaking .box-inner { animation: shakeBox 0.5s ease; }
+
+    /* ─── Result Section ────────────────────────── */
+    #result-section {
+      display: none;
+      text-align: center;
+      animation: slideUp 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+      margin-bottom: 20px;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card {
+      background: linear-gradient(145deg, rgba(11,37,21,0.95), rgba(15,58,28,0.9));
+      border: 2px solid var(--gold);
+      border-radius: 24px;
+      padding: 36px 28px;
+      box-shadow: var(--shadow-gold-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='1.5' fill='%23d4a843' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .result-congrats {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .result-title {
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--cream-dim);
+      margin-bottom: 20px;
+    }
+
+    .earned-amount-wrap {
+      position: relative;
+      display: inline-block;
+      margin: 8px 0 24px;
+    }
+
+    .earned-amount {
+      font-family: 'Amiri', serif;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(180deg, #fff8e7 0%, var(--gold-lite) 40%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 40px rgba(212,168,67,0.9));
+      animation: amountGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes amountGlow {
+      from { filter: drop-shadow(0 0 20px rgba(212,168,67,0.6)); }
+      to   { filter: drop-shadow(0 0 60px rgba(212,168,67,1)); }
+    }
+
+    .earned-note {
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      margin-bottom: 28px;
+      opacity: 0.8;
+    }
+
+    /* ─── Collect Button ────────────────────────── */
+    .collect-btn {
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--bg-deep);
+      background: linear-gradient(135deg, var(--gold-lite), var(--gold), var(--gold-dim));
+      border: none;
+      border-radius: 50px;
+      padding: 16px 48px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+      box-shadow: 0 6px 30px rgba(212,168,67,0.6), 0 2px 8px rgba(0,0,0,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .collect-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 40px rgba(212,168,67,0.8), 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .collect-btn:active { transform: scale(0.97); }
+    .collect-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -60%;
+      width: 40%; height: 200%;
+      background: rgba(255,255,255,0.3);
+      transform: skewX(-20deg);
+      animation: shimmer 2.5s 1s infinite;
+    }
+    @keyframes shimmer {
+      0%   { left: -60%; }
+      100% { left: 160%; }
+    }
+
+    /* Already claimed state */
+    .claimed-notice {
+      background: rgba(184,50,50,0.15);
+      border: 1px solid rgba(224,64,64,0.4);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: #f08080;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* ─── Modal Overlay ─────────────────────────── */
+    #modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(2,8,4,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #modal-overlay.active { display: flex; }
+
+    .modal {
+      background: linear-gradient(160deg, #0b2515, #071a0e);
+      border: 1.5px solid var(--gold);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--shadow-gold-lg), 0 30px 80px rgba(0,0,0,0.8);
+      overflow: hidden;
+      animation: modalIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0f3a1c, #165e2e);
+      padding: 24px 28px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(212,168,67,0.3);
+      position: relative;
+    }
+    .modal-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .modal-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold-lite);
+      letter-spacing: 1px;
+    }
+    .modal-subtitle {
+      font-size: 0.82rem;
+      color: var(--cream-dim);
+      margin-top: 6px;
+      font-family: 'Noto Sans Bengali', sans-serif;
+    }
+    .modal-amount-badge {
+      display: inline-block;
+      margin-top: 12px;
+      background: rgba(212,168,67,0.15);
+      border: 1px solid rgba(212,168,67,0.5);
+      color: var(--gold-lite);
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 1.3rem;
+      font-family: 'Amiri', serif;
+      font-weight: 700;
+    }
+
+    .modal-body { padding: 28px; }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gold-dim);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(15,58,28,0.5);
+      border: 1.5px solid rgba(212,168,67,0.25);
+      border-radius: 12px;
+      padding: 13px 16px;
+      color: var(--cream);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .form-input::placeholder { color: rgba(254,246,228,0.3); }
+    .form-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,168,67,0.15);
+    }
+
+    .form-error {
+      font-size: 0.78rem;
+      color: var(--red-lite);
+      margin-top: 5px;
+      display: none;
+    }
+
+    .modal-footer {
+      padding: 0 28px 28px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1.5px solid rgba(212,168,67,0.3);
+      border-radius: 12px;
+      color: var(--cream-dim);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 0.9rem;
+      padding: 13px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-cancel:hover { border-color: var(--gold); color: var(--cream); }
+
+    .btn-submit {
+      flex: 2;
+      background: linear-gradient(135deg, var(--gold-lite), var(--gold));
+      border: none;
+      border-radius: 12px;
+      color: var(--bg-deep);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 13px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 20px rgba(212,168,67,0.4);
+    }
+    .btn-submit:hover  { opacity: 0.92; transform: translateY(-1px); }
+    .btn-submit:active { transform: scale(0.97); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ─── Success Overlay ───────────────────────── */
+    #success-overlay {
+      position: fixed; inset: 0;
+      background: rgba(2,8,4,0.9);
+      backdrop-filter: blur(16px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #success-overlay.active { display: flex; }
+
+    .success-card {
+      background: linear-gradient(145deg, #0b2515, #071a0e);
+      border: 2px solid var(--gold);
+      border-radius: 28px;
+      padding: 48px 36px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: var(--shadow-gold-lg), 0 40px 100px rgba(0,0,0,0.8);
+      animation: successPop 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @keyframes successPop {
+      0%   { opacity: 0; transform: scale(0.6) rotate(-5deg); }
+      70%  { transform: scale(1.05) rotate(1deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .success-icon { font-size: 4rem; margin-bottom: 12px; }
+
+    .success-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.5rem;
+      color: var(--gold-lite);
+      margin-bottom: 12px;
+    }
+
+    .success-msg {
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 1rem;
+      color: var(--cream-dim);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .btn-close-success {
+      background: linear-gradient(135deg, var(--gold-lite), var(--gold));
+      border: none;
+      border-radius: 50px;
+      color: var(--bg-deep);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 13px 36px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(212,168,67,0.4);
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .btn-close-success:hover { transform: scale(1.05); }
+
+    /* ─── Footer ────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+      color: rgba(254,246,228,0.25);
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Floating Star Particles -->
+  <div id="particles"></div>
+
+  <!-- ════ MAIN CONTAINER ════ -->
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="header-deco">🌙 ✦ ☪️ ✦ 🌙</div>
+      <div class="eid-badge">✨ ঈদ মোবারক ২০২৫ ✨</div>
+      <h1>Mystery Salami</h1>
+      <p class="title-bn">রহস্যময় সালামি</p>
+      <div class="header-divider"></div>
+    </header>
+
+    <!-- Instruction -->
+    <div class="instruction-card">
+      <p>
+        ২৬টি রহস্যময় বাক্সের মধ্যে লুকিয়ে আছে <strong>ঈদের সালামি</strong>!
+        যেকোনো <strong>৩টি বাক্স</strong> বেছে নিন।
+        আপনার <strong>শেষ বাক্সের</strong> পরিমাণটি আপনার সালামি হবে। 🎁
+      </p>
+    </div>
+
+    <!-- Attempts Bar -->
+    <div class="attempts-bar">
+      <span class="attempts-label" id="attempts-label">বাকি সুযোগ:</span>
+      <div class="attempt-dot" id="dot-1"></div>
+      <div class="attempt-dot" id="dot-2"></div>
+      <div class="attempt-dot" id="dot-3"></div>
+    </div>
+
+    <!-- Boxes Grid -->
+    <div class="boxes-grid" id="boxes-grid">
+      {% for i in range(1, 27) %}
+      <div class="box" id="box-{{ i }}" data-id="{{ i }}" onclick="handleBoxClick({{ i }})">
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="gift-icon">🎁</span>
+            <span class="box-num">{{ '%02d' % i }}</span>
+          </div>
+          <div class="box-back">
+            <span class="back-sparkle">✦</span>
+            <span class="back-amount" id="back-{{ i }}">—</span>
+            <span class="back-taka">টাকা</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Result Section -->
+    <div id="result-section">
+      <div class="result-card">
+        <div class="result-congrats">🎉🌙🎊</div>
+        <p class="result-title">অভিনন্দন! আপনার ঈদের সালামি:</p>
+        <div class="earned-amount-wrap">
+          <div class="earned-amount" id="earned-display">৳0</div>
+        </div>
+        <p class="earned-note" id="earned-note"></p>
+        <div id="collect-area"></div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <footer>🌙 Mystery Salami · রহস্যময় সালামি · ঈদ মোবারক ✦</footer>
+
+  <!-- ════ CLAIM MODAL ════ -->
+  <div id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">🌙 Collect Salami</div>
+        <div class="modal-subtitle">আপনার সালামি নিতে নিচের ফর্ম পূরণ করুন</div>
+        <div class="modal-amount-badge" id="modal-amount-badge">৳500</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="input-name">আপনার নাম</label>
+          <input type="text" id="input-name" class="form-input" placeholder="নাম লিখুন..." autocomplete="name"/>
+          <div class="form-error" id="err-name">নাম লিখুন</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-bkash">bKash নম্বর</label>
+          <input type="tel" id="input-bkash" class="form-input" placeholder="01XXXXXXXXX" maxlength="11"/>
+          <div class="form-error" id="err-bkash">সঠিক bKash নম্বর দিন (11 ডিজিট)</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">বাতিল</button>
+        <button class="btn-submit" id="btn-submit" onclick="submitClaim()">সালামি নিন 🎁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SUCCESS OVERLAY ════ -->
+  <div id="success-overlay">
+    <div class="success-card">
+      <div class="success-icon">🎊</div>
+      <div class="success-title">ঈদ মোবারক!</div>
+      <p class="success-msg" id="success-msg">আপনার সালামি পাঠানো হবে শীঘ্রই!</p>
+      <button class="btn-close-success" onclick="closeSuccess()">ধন্যবাদ! 🌙</button>
+    </div>
+  </div>
+
+  <!-- ════ JAVASCRIPT ════ -->
+  <script>
+    // ── State Management ──────────────────────────
+    const LS_KEY = 'mystery_salami_v1';
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return { opens: 0, openedBoxes: [], gifts: [], finalGift: null, claimed: false };
+    }
+
+    function saveState(s) {
+      localStorage.setItem(LS_KEY, JSON.stringify(s));
+    }
+
+    let state = loadState();
+
+    // ── Floating Particles ────────────────────────
+    (function spawnParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 28; i++) {
+        const p = document.createElement('div');
+        p.className = 'star-particle';
+        p.style.cssText = `
+          left: ${Math.random() * 100}%;
+          --dur: ${5 + Math.random() * 10}s;
+          --delay: ${-Math.random() * 15}s;
+          width: ${2 + Math.random() * 4}px;
+          height: ${2 + Math.random() * 4}px;
+          opacity: 0;
+        `;
+        container.appendChild(p);
+      }
+    })();
+
+    // ── Restore UI from localStorage ─────────────
+    function restoreUI() {
+      // Restore opened boxes
+      state.openedBoxes.forEach((id, idx) => {
+        const box = document.getElementById('box-' + id);
+        if (!box) return;
+        document.getElementById('back-' + id).textContent = '৳' + state.gifts[idx].toLocaleString();
+        box.classList.add('opened');
+      });
+
+      // Update attempt dots
+      updateDots();
+
+      // If 3 opens done
+      if (state.opens >= 3) {
+        disableAllBoxes();
+        showResult();
+      }
+    }
+
+    function updateDots() {
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById('dot-' + i);
+        if (i <= state.opens) dot.classList.add('used');
+        else dot.classList.remove('used');
+      }
+      const label = document.getElementById('attempts-label');
+      if (state.opens >= 3) {
+        label.textContent = 'সব সুযোগ ব্যবহার হয়েছে!';
+        label.style.color = 'var(--gold)';
+      } else {
+        label.textContent = `বাকি সুযোগ (${3 - state.opens}টি):`;
+      }
+    }
+
+    // ── Box Click Handler ─────────────────────────
+    function handleBoxClick(id) {
+      if (state.opens >= 3) return;
+      if (state.openedBoxes.includes(id)) return;
+      if (state.claimed) return;
+
+      const box = document.getElementById('box-' + id);
+
+      // Shake first
+      box.classList.add('shaking');
+      setTimeout(() => {
+        box.classList.remove('shaking');
+        fetchAndOpen(id, box);
+      }, 500);
+    }
+
+    async function fetchAndOpen(id, box) {
+      try {
+        const res = await fetch('/open-box', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ box_id: id })
+        });
+        const data = await res.json();
+        if (data.gift == null) return;
+
+        const gift = data.gift;
+
+        // Update state
+        state.openedBoxes.push(id);
+        state.gifts.push(gift);
+        state.opens++;
+        state.finalGift = gift;
+        saveState(state);
+
+        // Show amount on back face
+        document.getElementById('back-' + id).textContent = '৳' + gift.toLocaleString();
+        box.classList.add('opened');
+
+        // Sparkle mini effect
+        miniSparkle(box);
+
+        // Update dots
+        updateDots();
+
+        // After 3 opens → result
+        if (state.opens >= 3) {
+          disableAllBoxes();
+          setTimeout(() => {
+            showResult();
+            launchConfetti();
+          }, 900);
+        }
+      } catch(e) {
+        console.error(e);
+      }
+    }
+
+    function disableAllBoxes() {
+      document.querySelectorAll('.box:not(.opened)').forEach(b => b.classList.add('disabled'));
+    }
+
+    // ── Show Result ────────────────────────────────
+    function showResult() {
+      const section = document.getElementById('result-section');
+      section.style.display = 'block';
+
+      const amount = state.finalGift || 0;
+      document.getElementById('earned-display').textContent = '৳' + amount.toLocaleString();
+      document.getElementById('earned-note').textContent =
+        'আপনার ৩য় বাক্সে ছিল ৳' + amount.toLocaleString() + ' টাকার সালামি! 🌙';
+
+      const collectArea = document.getElementById('collect-area');
+
+      if (state.claimed) {
+        collectArea.innerHTML = `<div class="claimed-notice">✅ আপনি ইতিমধ্যে সালামি দাবি করেছেন। শীঘ্রই পাঠানো হবে।</div>`;
+      } else {
+        collectArea.innerHTML = `<button class="collect-btn" onclick="openModal()">🎁 সালামি সংগ্রহ করুন</button>`;
+      }
+
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ── Modal ──────────────────────────────────────
+    function openModal() {
+      const amount = state.finalGift || 0;
+      document.getElementById('modal-amount-badge').textContent = '৳' + amount.toLocaleString();
+      document.getElementById('modal-overlay').classList.add('active');
+      document.getElementById('input-name').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+      clearErrors();
+    }
+
+    function clearErrors() {
+      document.getElementById('err-name').style.display = 'none';
+      document.getElementById('err-bkash').style.display = 'none';
+    }
+
+    async function submitClaim() {
+      clearErrors();
+      const name  = document.getElementById('input-name').value.trim();
+      const bkash = document.getElementById('input-bkash').value.trim();
+      const amount = state.finalGift;
+      let valid = true;
+
+      if (!name) {
+        document.getElementById('err-name').style.display = 'block';
+        valid = false;
+      }
+      if (!bkash || bkash.length < 11 || !/^01/.test(bkash)) {
+        document.getElementById('err-bkash').style.display = 'block';
+        valid = false;
+      }
+      if (!valid) return;
+
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = '⏳ পাঠানো হচ্ছে...';
+
+      try {
+        const res = await fetch('/claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, bkash, amount })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          state.claimed = true;
+          saveState(state);
+
+          closeModal();
+          showSuccess(data.message);
+          launchConfetti(true);
+
+          // Update collect area
+          const collectArea = document.getElementById('collect-area');
+          collectArea.innerHTML = `<div class="claimed-notice">✅ আপনি ইতিমধ্যে সালামি দাবি করেছেন। শীঘ্রই পাঠানো হবে।</div>`;
+        } else {
+          alert(data.error || 'কিছু একটা সমস্যা হয়েছে।');
+        }
+      } catch(e) {
+        alert('সংযোগ সমস্যা। আবার চেষ্টা করুন।');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'সালামি নিন 🎁';
+      }
+    }
+
+    // ── Success ────────────────────────────────────
+    function showSuccess(msg) {
+      document.getElementById('success-msg').textContent = msg;
+      document.getElementById('success-overlay').classList.add('active');
+    }
+
+    function closeSuccess() {
+      document.getElementById('success-overlay').classList.remove('active');
+    }
+
+    // ── Mini Sparkle Effect ────────────────────────
+    function miniSparkle(element) {
+      const rect = element.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      for (let i = 0; i < 10; i++) {
+        const s = document.createElement('div');
+        s.style.cssText = `
+          position: fixed;
+          left: ${cx}px; top: ${cy}px;
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: ${Math.random() > 0.5 ? '#d4a843' : '#f0c866'};
+          pointer-events: none;
+          z-index: 500;
+          transform: translate(-50%, -50%);
+          animation: sparkleOut 0.8s ease forwards;
+          --tx: ${(Math.random() - 0.5) * 100}px;
+          --ty: ${(Math.random() - 0.5) * 100}px;
+        `;
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+      }
+    }
+
+    // Inject sparkleOut keyframe
+    const sparkleStyle = document.createElement('style');
+    sparkleStyle.textContent = `
+      @keyframes sparkleOut {
+        to { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(sparkleStyle);
+
+    // ── Confetti ───────────────────────────────────
+    function launchConfetti(big = false) {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx    = canvas.getContext('2d');
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const count  = big ? 220 : 100;
+      const colors = ['#d4a843','#f0c866','#ffffff','#c0392b','#27ae60','#fef6e4','#e8d48b'];
+      const pieces = [];
+
+      for (let i = 0; i < count; i++) {
+        pieces.push({
+          x:   Math.random() * canvas.width,
+          y:   Math.random() * -canvas.height,
+          w:   6 + Math.random() * 8,
+          h:   10 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rot:   Math.random() * 360,
+          vx:    (Math.random() - 0.5) * 4,
+          vy:    2 + Math.random() * 4,
+          vr:    (Math.random() - 0.5) * 6,
+          shape: Math.random() > 0.5 ? 'rect' : 'star'
+        });
+      }
+
+      let frame;
+      let alpha = 1;
+      const duration = big ? 280 : 160;
+      let tick = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          ctx.fillStyle = p.color;
+          if (p.shape === 'star') {
+            ctx.font = `${p.w * 1.5}px serif`;
+            ctx.fillText('✦', -p.w/2, p.h/2);
+          } else {
+            ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          }
+          ctx.restore();
+          p.x  += p.vx;
+          p.y  += p.vy;
+          p.rot += p.vr;
+          p.vy += 0.07;
+        });
+        tick++;
+        if (tick > duration * 0.6) alpha = Math.max(0, alpha - 0.015);
+        if (tick < duration) frame = requestAnimationFrame(draw);
+        else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+      }
+      draw();
+    }
+
+    // ── Close modal on backdrop click ─────────────
+    document.getElementById('modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // ── Enter key for submit ───────────────────────
+    ['input-name','input-bkash'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') submitClaim();
+      });
+    });
+
+    // ── Init ───────────────────────────────────────
+    restoreUI();
+  </script>
+
+</body>
+</html>
