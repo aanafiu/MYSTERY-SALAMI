@@ -56,7 +56,7 @@ def init_db():
             id           INT          AUTO_INCREMENT PRIMARY KEY,
             ip_address   VARCHAR(100) NOT NULL UNIQUE,
             opens        INT          NOT NULL DEFAULT 0,
-            opened_boxes TEXT         NOT NULL DEFAULT '[]',
+            opened_boxes VARCHAR(500) NOT NULL DEFAULT '[]',
             final_gift   INT          NULL,
             claimed      TINYINT      NOT NULL DEFAULT 0,
             created_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
@@ -65,6 +65,18 @@ def init_db():
     conn.commit()
     cur.close()
     conn.close()
+
+def get_ip():
+    # Works behind Render's proxy too
+    return request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
+
+def get_session(cur, ip):
+    cur.execute("SELECT * FROM sessions WHERE ip_address = %s", (ip,))
+    row = cur.fetchone()
+    if not row:
+        cur.execute("INSERT INTO sessions (ip_address) VALUES (%s)", (ip,))
+        return {'ip_address': ip, 'opens': 0, 'opened_boxes': '[]', 'final_gift': None, 'claimed': 0}
+    return row
 
 # ── Routes ────────────────────────────────────────
 
@@ -261,17 +273,6 @@ def open_box():
         'done':        opens >= 3
     })
 
-def get_ip():
-    # Works behind Render's proxy too
-    return request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
-
-def get_session(cur, ip):
-    cur.execute("SELECT * FROM sessions WHERE ip_address = %s", (ip,))
-    row = cur.fetchone()
-    if not row:
-        cur.execute("INSERT INTO sessions (ip_address) VALUES (%s)", (ip,))
-        return {'ip_address': ip, 'opens': 0, 'opened_boxes': '[]', 'final_gift': None, 'claimed': 0}
-    return row
 
 init_db()
 
