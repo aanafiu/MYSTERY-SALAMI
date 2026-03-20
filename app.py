@@ -22,11 +22,11 @@ BOX_GIFTS = {i + 1: _amounts[i] for i in range(26)}
 
 # ── MySQL Config (set these as environment variables on Render) ──
 DB_CONFIG = {
-    'host':     os.environ.get('MYSQL_HOST',     'localhost'),
-    'user':     os.environ.get('MYSQL_USER',     'root'),
-    'password': os.environ.get('MYSQL_PASSWORD', ''),
-    'database': os.environ.get('MYSQL_DATABASE', 'mystery_salami'),
-    'port':     int(os.environ.get('MYSQL_PORT', 3306)),
+    'host':     os.environ.get('MYSQL_HOST'),
+    'user':     os.environ.get('MYSQL_USER'),
+    'password': os.environ.get('MYSQL_PASSWORD'),
+    'database': os.environ.get('MYSQL_DATABASE'),
+    'port':     int(os.environ.get('MYSQL_PORT')),
 }
 # DB_CONFIG = {
 #     'host':     'localhost',
@@ -205,8 +205,11 @@ def admin_delete():
     return jsonify({'success': True})
 
 
+
+
+
 if __name__ == '__main__':
     init_db()
-    print("🌙 Mystery Salami  → http://127.0.0.1:5001")
-    print("🔐 Admin Panel     → http://127.0.0.1:5001/admin?pwd=eid2025")
+    # print("🌙 Mystery Salami  → http://127.0.0.1:5001")
+    # print("🔐 Admin Panel     → http://127.0.0.1:5001/admin?pwd=eid2025")
     app.run(debug=False, port=5001)
