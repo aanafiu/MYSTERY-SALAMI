@@ -22,21 +22,14 @@ BOX_GIFTS = {i + 1: _amounts[i] for i in range(26)}
 
 # ── MySQL Config (set these as environment variables on Render) ──
 DB_CONFIG = {
-    'host':     os.environ.get('MYSQL_HOST'),
-    'user':     os.environ.get('MYSQL_USER'),
-    'password': os.environ.get('MYSQL_PASSWORD'),
-    'database': os.environ.get('MYSQL_DATABASE'),
-    'port':     int(os.environ.get('MYSQL_PORT')),
+    'host':     os.environ.get('MYSQL_HOST',     'localhost'),
+    'user':     os.environ.get('MYSQL_USER',     'root'),
+    'password': os.environ.get('MYSQL_PASSWORD', ''),
+    'database': os.environ.get('MYSQL_DATABASE', 'mystery_salami'),
+    'port':     int(os.environ.get('MYSQL_PORT', 3306)),
 }
-# DB_CONFIG = {
-#     'host':     'localhost',
-#     'user':     'root',
-#     'password': '',
-#     'database': 'mystery_salami',
-#     'port':     3306,
-# }
 
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'eid2025')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 
 def get_db():
     conn = mysql.connector.connect(**DB_CONFIG)
@@ -44,16 +37,8 @@ def get_db():
 
 
 def init_db():
-    # Connect WITHOUT database first to create it
-    conn = mysql.connector.connect(
-        host=DB_CONFIG['host'],
-        user=DB_CONFIG['user'],
-        password=DB_CONFIG['password'],
-        port=DB_CONFIG['port'],
-    )
-    cur = conn.cursor()
-    cur.execute("CREATE DATABASE IF NOT EXISTS mystery_salami")
-    cur.execute("USE mystery_salami")
+    conn = get_db()
+    cur  = conn.cursor()
     cur.execute('''
         CREATE TABLE IF NOT EXISTS claims (
             id           INT          AUTO_INCREMENT PRIMARY KEY,
