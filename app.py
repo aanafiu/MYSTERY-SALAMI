@@ -114,7 +114,7 @@ def claim():
     })
 
 
-@app.route('/history')
+@app.route('/history', methods=['GET'])
 def history():
     conn = get_db()
     cur  = conn.cursor(dictionary=True)
@@ -191,10 +191,9 @@ def admin_delete():
 
 
 
-
+init_db()
 
 if __name__ == '__main__':
-    init_db()
     # print("🌙 Mystery Salami  → http://127.0.0.1:5001")
     # print("🔐 Admin Panel     → http://127.0.0.1:5001/admin?pwd=eid2025")
-    app.run(debug=False, port=5001)
+    app.run()
