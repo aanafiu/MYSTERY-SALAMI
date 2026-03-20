@@ -1547,24 +1547,29 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, bkash, amount })
         });
+
+        // ── Add this to see real server error ──
+        if (!res.ok) {
+          const text = await res.text();
+          alert('Server error: ' + text);
+          return;
+        }
+
         const data = await res.json();
 
         if (data.success) {
           state.claimed = true;
           saveState(state);
-
           closeModal();
           showSuccess(data.message);
           launchConfetti(true);
-
-          // Update collect area
           const collectArea = document.getElementById('collect-area');
           collectArea.innerHTML = `<div class="claimed-notice">✅ আপনি ইতিমধ্যে সালামি দাবি করেছেন। শীঘ্রই পাঠানো হবে।</div>`;
         } else {
           alert(data.error || 'কিছু একটা সমস্যা হয়েছে।');
         }
       } catch (e) {
-        alert('সংযোগ সমস্যা। আবার চেষ্টা করুন।');
+        alert('Catch error: ' + e.message); // ← now shows real error
       } finally {
         btn.disabled = false;
         btn.textContent = 'সালামি নিন 🎁';

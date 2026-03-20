@@ -73,7 +73,7 @@ def open_box():
     return jsonify({'gift': BOX_GIFTS[box_id]})
 
 
-@app.route('/claim', methods=['POST'])
+@app.route('/claim', methods=['POST',"GET"])
 def claim():
     data   = request.get_json(force=True)
     name   = str(data.get('name', '')).strip()
